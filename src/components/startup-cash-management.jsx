@@ -856,35 +856,7 @@ const StartupCashManagement = () => {
         </div>
       </div>
       
-      <div className="bg-white p-4 rounded-lg shadow overflow-x-auto">
-        <h2 className="text-xl font-semibold mb-4">Weekly Cash Flow Detail</h2>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Week</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Starting Cash</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payroll</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Expenses</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ending Cash</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {cashFlowData.map((week, idx) => (
-              <tr key={idx} className={week.endingCash < 0 ? 'bg-red-50' : ''}>
-                <td className="px-6 py-4 whitespace-nowrap">{week.week}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.startingCash)}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.revenue)}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.payroll)}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.opex)}</td>
-                <td className={`px-6 py-4 whitespace-nowrap font-medium ${week.endingCash < 0 ? 'text-red-600' : 'text-green-600'}`}>{formatCurrency(week.endingCash)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
-      <div className="mt-6 bg-gray-50 p-4 rounded-lg shadow">
+      <div className="mt-6 bg-gray-50 p-4 rounded-lg shadow mb-6">
         <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
           <h2 className="text-xl font-semibold">Cash Management Checklist</h2>
           <div className="flex gap-2">
@@ -1007,6 +979,34 @@ const StartupCashManagement = () => {
             <label>Are you checking regularly to see if you are on or off track and adjusting accordingly?</label>
           </div>
         </div>
+      </div>
+      
+      <div className="bg-white p-4 rounded-lg shadow overflow-x-auto">
+        <h2 className="text-xl font-semibold mb-4">Weekly Cash Flow Detail</h2>
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Week</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Starting Cash</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payroll</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Expenses</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ending Cash</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {cashFlowData.map((week, idx) => (
+              <tr key={idx} className={week.endingCash < 0 ? 'bg-red-50' : ''}>
+                <td className="px-6 py-4 whitespace-nowrap">{week.week}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.startingCash)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.revenue)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.payroll)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(week.opex)}</td>
+                <td className={`px-6 py-4 whitespace-nowrap font-medium ${week.endingCash < 0 ? 'text-red-600' : 'text-green-600'}`}>{formatCurrency(week.endingCash)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
