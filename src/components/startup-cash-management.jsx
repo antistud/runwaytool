@@ -63,15 +63,15 @@ const StartupCashManagement = () => {
     let currentRevenue = weeklyRevenue;
     let currentPayroll = weeklyPayroll;
     let currentOpex = weeklyOpex;
+    let baseRevenue = weeklyRevenue; // Local variable to track base revenue
     
     for (let i = 0; i < weeks; i++) {
       const weekNum = i + 1;
       
       // Apply growth rate to revenue (compounded weekly)
       if (i > 0) {
-        // Apply growth rate to the current revenue from the previous week
-        // This ensures that both the base revenue and any recurring revenue changes grow
-        currentRevenue = currentRevenue * (1 + (revenueGrowth / 100));
+        // Apply growth rate to the base revenue
+        currentRevenue = baseRevenue * Math.pow((1 + (revenueGrowth / 100)), i);
       }
       
       // Process events for this week
@@ -137,14 +137,17 @@ const StartupCashManagement = () => {
       
       // Update recurring values if there were impacts
       if (eventRevenueImpact !== 0 && !weekEvents.some(e => events.find(ev => ev.name === e)?.recurring === false)) {
-        // Store the base revenue without growth for future calculations
-        weeklyRevenue = weeklyRevenue + eventRevenueImpact;
         // Update current revenue with the adjusted value
         currentRevenue = adjustedRevenue;
       }
       
-      // For payroll and opex, we need to be careful not to double-count recurring events
+      // For revenue, payroll and opex, we need to be careful not to double-count recurring events
       // Only apply the impact of new events that start this week
+      const newRevenueEvents = weekEvents.filter(e => {
+        const event = events.find(ev => ev.name === e);
+        return event && event.recurring && event.type === 'revenue' && event.week === weekNum;
+      });
+      
       const newPayrollEvents = weekEvents.filter(e => {
         const event = events.find(ev => ev.name === e);
         return event && event.recurring && event.type === 'payroll' && event.week === weekNum;
@@ -169,7 +172,19 @@ const StartupCashManagement = () => {
         newOpexImpact += parseInt(event.amount);
       });
       
+      // Calculate impact of only new recurring revenue events
+      let newRevenueImpact = 0;
+      
+      newRevenueEvents.forEach(e => {
+        const event = events.find(ev => ev.name === e);
+        newRevenueImpact += parseInt(event.amount);
+      });
+      
       // Update base values with only the new impacts
+      if (newRevenueImpact !== 0) {
+        baseRevenue += newRevenueImpact;
+      }
+      
       if (newPayrollImpact !== 0) {
         currentPayroll += newPayrollImpact;
       }
