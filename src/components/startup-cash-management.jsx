@@ -71,6 +71,7 @@ const StartupCashManagement = () => {
       // Apply growth rate to revenue (compounded weekly)
       if (i > 0) {
         // Apply growth rate to the base revenue
+        // This ensures that both initial revenue and any recurring revenue changes grow
         currentRevenue = baseRevenue * Math.pow((1 + (revenueGrowth / 100)), i);
       }
       
@@ -116,8 +117,20 @@ const StartupCashManagement = () => {
         }
       });
       
-      // Apply event impacts to weekly values (recurring impacts are cumulative)
-      const adjustedRevenue = Math.round(currentRevenue + eventRevenueImpact);
+      // Apply event impacts to weekly values
+      // For one-time revenue events, add them directly
+      // For recurring revenue events, they should be included in the base and grow with the rate
+      const oneTimeRevenueImpact = weekEvents
+        .filter(e => {
+          const event = events.find(ev => ev.name === e);
+          return event && !event.recurring && event.type === 'revenue';
+        })
+        .reduce((sum, e) => {
+          const event = events.find(ev => ev.name === e);
+          return sum + parseInt(event.amount);
+        }, 0);
+        
+      const adjustedRevenue = Math.round(currentRevenue + oneTimeRevenueImpact);
       const adjustedPayroll = currentPayroll + eventPayrollImpact;
       const adjustedOpex = currentOpex + eventOpexImpact;
       
@@ -182,6 +195,8 @@ const StartupCashManagement = () => {
       
       // Update base values with only the new impacts
       if (newRevenueImpact !== 0) {
+        // For recurring revenue events, add to the base revenue
+        // This will ensure they grow with the growth rate in future weeks
         baseRevenue += newRevenueImpact;
       }
       
