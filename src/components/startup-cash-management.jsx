@@ -289,6 +289,22 @@ const StartupCashManagement = () => {
     return cashFlowData[cashFlowData.length - 1].endingCash > cashFlowData[cashFlowData.length - 2].endingCash;
   };
   
+  // Calculate when we'll be cash flow positive
+  const calculateCashFlowPositiveWeek = () => {
+    if (cashFlowData.length < 3) return 0;
+    
+    for (let i = 2; i < cashFlowData.length; i++) {
+      // Check if this week's net (revenue - expenses) is positive
+      const weeklyNet = cashFlowData[i].revenue - cashFlowData[i].payroll - cashFlowData[i].opex;
+      
+      if (weeklyNet > 0) {
+        return cashFlowData[i].weekNum;
+      }
+    }
+    
+    return 0; // Not projected to be positive within the timeframe
+  };
+  
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -356,6 +372,11 @@ const StartupCashManagement = () => {
               <span className={`ml-2 px-2 py-1 rounded ${isCashFlowPositive() ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {isCashFlowPositive() ? 'Positive' : 'Negative'}
               </span>
+              {!isCashFlowPositive() && calculateCashFlowPositiveWeek() > 0 && (
+                <span className="ml-2 text-sm text-gray-600">
+                  (Projected positive in Week {calculateCashFlowPositiveWeek()})
+                </span>
+              )}
             </p>
           </div>
         </div>
