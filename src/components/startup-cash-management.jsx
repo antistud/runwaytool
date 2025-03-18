@@ -651,11 +651,59 @@ const StartupCashManagement = () => {
                   {events.map((event, idx) => (
                     <tr key={idx}>
                       <td className="px-4 py-2 whitespace-nowrap">{event.name}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">Week {event.week}</td>
-                      <td className="px-4 py-2 whitespace-nowrap capitalize">{event.type}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{formatCurrency(event.amount)}</td>
                       <td className="px-4 py-2 whitespace-nowrap">
-                        {event.recurring ? 'Permanent' : 'One-time'}
+                        <div className="flex items-center">
+                          <span className="mr-2">Week</span>
+                          <input
+                            type="number"
+                            min="1"
+                            max={weeks}
+                            value={event.week}
+                            onChange={(e) => {
+                              const updatedEvents = [...events];
+                              updatedEvents[idx] = {
+                                ...event,
+                                week: Number(e.target.value)
+                              };
+                              setEvents(updatedEvents);
+                            }}
+                            className="w-16 p-1 border rounded focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap capitalize">{event.type}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <input
+                          type="number"
+                          value={event.amount}
+                          onChange={(e) => {
+                            const updatedEvents = [...events];
+                            updatedEvents[idx] = {
+                              ...event,
+                              amount: e.target.value
+                            };
+                            setEvents(updatedEvents);
+                          }}
+                          className="w-24 p-1 border rounded focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={event.recurring}
+                            onChange={(e) => {
+                              const updatedEvents = [...events];
+                              updatedEvents[idx] = {
+                                ...event,
+                                recurring: e.target.checked
+                              };
+                              setEvents(updatedEvents);
+                            }}
+                            className="mr-2"
+                          />
+                          {event.recurring ? 'Permanent' : 'One-time'}
+                        </div>
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap">
                         <button 
