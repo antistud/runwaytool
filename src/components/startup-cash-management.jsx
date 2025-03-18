@@ -69,7 +69,9 @@ const StartupCashManagement = () => {
       
       // Apply growth rate to revenue (compounded weekly)
       if (i > 0) {
-        currentRevenue = weeklyRevenue * Math.pow((1 + (revenueGrowth / 100)), i);
+        // Apply growth rate to the current revenue from the previous week
+        // This ensures that both the base revenue and any recurring revenue changes grow
+        currentRevenue = currentRevenue * (1 + (revenueGrowth / 100));
       }
       
       // Process events for this week
@@ -135,6 +137,9 @@ const StartupCashManagement = () => {
       
       // Update recurring values if there were impacts
       if (eventRevenueImpact !== 0 && !weekEvents.some(e => events.find(ev => ev.name === e)?.recurring === false)) {
+        // Store the base revenue without growth for future calculations
+        weeklyRevenue = weeklyRevenue + eventRevenueImpact;
+        // Update current revenue with the adjusted value
         currentRevenue = adjustedRevenue;
       }
       if (eventPayrollImpact !== 0 && !weekEvents.some(e => events.find(ev => ev.name === e)?.recurring === false)) {
