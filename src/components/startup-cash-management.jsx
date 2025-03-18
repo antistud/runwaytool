@@ -574,7 +574,7 @@ const StartupCashManagement = () => {
                     className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="cash">Cash Infusion (e.g., Funding)</option>
-                    <option value="revenue">Revenue Change</option>
+                    {/* <option value="revenue">Revenue Change</option> */}
                     <option value="payroll">Payroll Change</option>
                     <option value="opex">Operating Expenses Change</option>
                   </select>
