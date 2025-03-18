@@ -416,8 +416,24 @@ const StartupCashManagement = () => {
           
           {showMemo && (
             <div className="bg-white p-3 rounded shadow-sm">
-              <h3 className="font-medium">Current Cash Position</h3>
-              <p className="mb-2">{formatCurrency(memo.cashPosition)}</p>
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <h3 className="font-medium">Cash Position</h3>
+                  <p className="mb-2">{formatCurrency(memo.cashPosition)}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium">Runway</h3>
+                  <p className="mb-2">{calculateRunway()}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium">Monthly Revenue</h3>
+                  <p className="mb-2">{formatCurrency(weeklyRevenue * 4)}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium">Monthly Burn Rate</h3>
+                  <p className="mb-2">{formatCurrency((weeklyPayroll + weeklyOpex - weeklyRevenue) * 4)}</p>
+                </div>
+              </div>
               
               <h3 className="font-medium">Yearly Plan</h3>
               <p className="mb-2">{memo.yearlyPlan}</p>
