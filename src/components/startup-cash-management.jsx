@@ -142,11 +142,40 @@ const StartupCashManagement = () => {
         // Update current revenue with the adjusted value
         currentRevenue = adjustedRevenue;
       }
-      if (eventPayrollImpact !== 0 && !weekEvents.some(e => events.find(ev => ev.name === e)?.recurring === false)) {
-        currentPayroll = adjustedPayroll;
+      
+      // For payroll and opex, we need to be careful not to double-count recurring events
+      // Only apply the impact of new events that start this week
+      const newPayrollEvents = weekEvents.filter(e => {
+        const event = events.find(ev => ev.name === e);
+        return event && event.recurring && event.type === 'payroll' && event.week === weekNum;
+      });
+      
+      const newOpexEvents = weekEvents.filter(e => {
+        const event = events.find(ev => ev.name === e);
+        return event && event.recurring && event.type === 'opex' && event.week === weekNum;
+      });
+      
+      // Calculate impact of only new recurring events
+      let newPayrollImpact = 0;
+      let newOpexImpact = 0;
+      
+      newPayrollEvents.forEach(e => {
+        const event = events.find(ev => ev.name === e);
+        newPayrollImpact += parseInt(event.amount);
+      });
+      
+      newOpexEvents.forEach(e => {
+        const event = events.find(ev => ev.name === e);
+        newOpexImpact += parseInt(event.amount);
+      });
+      
+      // Update base values with only the new impacts
+      if (newPayrollImpact !== 0) {
+        currentPayroll += newPayrollImpact;
       }
-      if (eventOpexImpact !== 0 && !weekEvents.some(e => events.find(ev => ev.name === e)?.recurring === false)) {
-        currentOpex = adjustedOpex;
+      
+      if (newOpexImpact !== 0) {
+        currentOpex += newOpexImpact;
       }
     }
     
