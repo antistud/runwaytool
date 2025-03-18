@@ -13,6 +13,6 @@ fi
 
 # Deploy to Cloudflare Pages
 echo "Deploying to Cloudflare Pages..."
-wrangler pages publish build --project-name=startup-cash-management
+wrangler pages deploy build --project-name=startup-cash-management
 
 echo "Deployment complete! Your app should be available at https://startup-cash-management.pages.dev"
