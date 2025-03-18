@@ -29,7 +29,22 @@ const StartupCashManagement = () => {
         financingPlans: "Raise $1.5M seed round in Q3",
         assumptions: "20% monthly revenue growth, 15% increase in team size by EOY"
       },
-      events: []
+      events: [
+        {
+          name: "Seed Round",
+          week: 4,
+          type: "cash",
+          amount: "500000",
+          recurring: false
+        },
+        {
+          name: "Hire Lead Developer",
+          week: 6,
+          type: "payroll",
+          amount: "3000",
+          recurring: true
+        }
+      ]
     };
   };
 
