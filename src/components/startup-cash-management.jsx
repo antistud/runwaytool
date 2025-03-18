@@ -1,24 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 
+const LOCAL_STORAGE_KEY = 'startup-cash-management-data';
+
 const StartupCashManagement = () => {
-  // Initial state with empty data
-  const [weeks, setWeeks] = useState(16); // Default to 16 weeks (approximately 4 months)
-  const [startingCash, setStartingCash] = useState(100000);
-  const [weeklyRevenue, setWeeklyRevenue] = useState(5000);
-  const [weeklyPayroll, setWeeklyPayroll] = useState(8000);
-  const [weeklyOpex, setWeeklyOpex] = useState(3000);
-  const [revenueGrowth, setRevenueGrowth] = useState(5); // 5% weekly growth
+  // Load data from localStorage or use defaults
+  const loadFromLocalStorage = () => {
+    try {
+      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedData) {
+        return JSON.parse(savedData);
+      }
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error);
+    }
+    
+    // Default values if nothing in localStorage
+    return {
+      weeks: 16,
+      startingCash: 100000,
+      weeklyRevenue: 5000,
+      weeklyPayroll: 8000,
+      weeklyOpex: 3000,
+      revenueGrowth: 5,
+      memo: {
+        cashPosition: 100000,
+        yearlyPlan: "Achieve product-market fit and prepare for Series A",
+        financingPlans: "Raise $1.5M seed round in Q3",
+        assumptions: "20% monthly revenue growth, 15% increase in team size by EOY"
+      },
+      events: []
+    };
+  };
+
+  const savedData = loadFromLocalStorage();
+  
+  // Initial state with data from localStorage or defaults
+  const [weeks, setWeeks] = useState(savedData.weeks);
+  const [startingCash, setStartingCash] = useState(savedData.startingCash);
+  const [weeklyRevenue, setWeeklyRevenue] = useState(savedData.weeklyRevenue);
+  const [weeklyPayroll, setWeeklyPayroll] = useState(savedData.weeklyPayroll);
+  const [weeklyOpex, setWeeklyOpex] = useState(savedData.weeklyOpex);
+  const [revenueGrowth, setRevenueGrowth] = useState(savedData.revenueGrowth);
   const [showMemo, setShowMemo] = useState(false);
-  const [memo, setMemo] = useState({
-    cashPosition: startingCash,
-    yearlyPlan: "Achieve product-market fit and prepare for Series A",
-    financingPlans: "Raise $1.5M seed round in Q3",
-    assumptions: "20% monthly revenue growth, 15% increase in team size by EOY"
-  });
+  const [memo, setMemo] = useState(savedData.memo);
   
   // Event planning state
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(savedData.events);
   const [newEvent, setNewEvent] = useState({
     name: "",
     week: 1,
@@ -166,6 +194,26 @@ const StartupCashManagement = () => {
     }).format(amount);
   };
   
+  // Save data to localStorage whenever relevant state changes
+  useEffect(() => {
+    const dataToSave = {
+      weeks,
+      startingCash,
+      weeklyRevenue,
+      weeklyPayroll,
+      weeklyOpex,
+      revenueGrowth,
+      memo,
+      events
+    };
+    
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('Error saving data to localStorage:', error);
+    }
+  }, [weeks, startingCash, weeklyRevenue, weeklyPayroll, weeklyOpex, revenueGrowth, memo, events]);
+
   // Update memo when form changes
   useEffect(() => {
     setMemo({
@@ -176,7 +224,20 @@ const StartupCashManagement = () => {
   
   return (
     <div className="p-6 max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold mb-6 text-center">Startup Cash Management Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-center">Startup Cash Management Dashboard</h1>
+        <button 
+          onClick={() => {
+            if (window.confirm('Are you sure you want to reset all data to defaults?')) {
+              localStorage.removeItem(LOCAL_STORAGE_KEY);
+              window.location.reload();
+            }
+          }}
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Reset Data
+        </button>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="p-4 bg-blue-50 rounded-lg shadow">
@@ -577,7 +638,102 @@ const StartupCashManagement = () => {
       </div>
       
       <div className="mt-6 bg-gray-50 p-4 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Cash Management Checklist</h2>
+        <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
+          <h2 className="text-xl font-semibold">Cash Management Checklist</h2>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                const dataToSave = {
+                  weeks,
+                  startingCash,
+                  weeklyRevenue,
+                  weeklyPayroll,
+                  weeklyOpex,
+                  revenueGrowth,
+                  memo,
+                  events
+                };
+                
+                try {
+                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+                  alert('Data saved successfully!');
+                } catch (error) {
+                  console.error('Error saving data:', error);
+                  alert('Error saving data. Please try again.');
+                }
+              }}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Save Data
+            </button>
+            
+            <button 
+              onClick={() => {
+                const dataToExport = {
+                  weeks,
+                  startingCash,
+                  weeklyRevenue,
+                  weeklyPayroll,
+                  weeklyOpex,
+                  revenueGrowth,
+                  memo,
+                  events
+                };
+                
+                const dataStr = JSON.stringify(dataToExport, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'startup-cash-management-data.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Export Data
+            </button>
+            
+            <label className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 cursor-pointer">
+              Import Data
+              <input
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={(e) => {
+                  const fileReader = new FileReader();
+                  fileReader.readAsText(e.target.files[0], "UTF-8");
+                  fileReader.onload = e => {
+                    try {
+                      const importedData = JSON.parse(e.target.result);
+                      
+                      // Update all state with imported data
+                      setWeeks(importedData.weeks || 16);
+                      setStartingCash(importedData.startingCash || 100000);
+                      setWeeklyRevenue(importedData.weeklyRevenue || 5000);
+                      setWeeklyPayroll(importedData.weeklyPayroll || 8000);
+                      setWeeklyOpex(importedData.weeklyOpex || 3000);
+                      setRevenueGrowth(importedData.revenueGrowth || 5);
+                      setMemo(importedData.memo || {
+                        cashPosition: importedData.startingCash || 100000,
+                        yearlyPlan: "Achieve product-market fit and prepare for Series A",
+                        financingPlans: "Raise $1.5M seed round in Q3",
+                        assumptions: "20% monthly revenue growth, 15% increase in team size by EOY"
+                      });
+                      setEvents(importedData.events || []);
+                      
+                      alert('Data imported successfully!');
+                    } catch (error) {
+                      console.error('Error importing data:', error);
+                      alert('Error importing data. Please check the file format.');
+                    }
+                  };
+                }}
+              />
+            </label>
+          </div>
+        </div>
         <div className="space-y-3">
           <div className="flex items-start">
             <input type="checkbox" className="mt-1 mr-2" />

@@ -74,6 +74,15 @@ wrangler pages publish build
 4. View your projected cash flow and runway
 5. Use the financial memo editor to document your plans and assumptions
 
+## Data Persistence
+
+Your data is automatically saved to your browser's local storage, so it will persist between sessions. You can also:
+
+- **Save Data**: Manually save your current data to local storage
+- **Reset Data**: Clear all data and return to default values
+- **Export Data**: Download your data as a JSON file for backup or sharing
+- **Import Data**: Upload a previously exported JSON file to restore your data
+
 ## License
 
 MIT
