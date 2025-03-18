@@ -367,7 +367,11 @@ const StartupCashManagement = () => {
           <p className="text-sm text-gray-600 mt-2">Starting Balance</p>
           
           <div className="mt-4">
-            <p className="font-medium">Runway: <span className="text-xl font-bold">{calculateRunway()}</span></p>
+            <p className="font-medium">Runway: <span className="text-xl font-bold">{calculateRunway()}</span>
+              <span className="text-xs text-gray-500 ml-2">
+                ({calculateRunway().replace('weeks', '').replace('+', '').trim() / 4} months)
+              </span>
+            </p>
             <p className="font-medium mt-2">Cash Flow Status: 
               <span className={`ml-2 px-2 py-1 rounded ${isCashFlowPositive() ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {isCashFlowPositive() ? 'Positive' : 'Negative'}
