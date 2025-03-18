@@ -59,6 +59,12 @@ const StartupCashManagement = () => {
   const [revenueGrowth, setRevenueGrowth] = useState(savedData.revenueGrowth);
   const [showMemo, setShowMemo] = useState(false);
   const [memo, setMemo] = useState(savedData.memo);
+  const [visibleLines, setVisibleLines] = useState({
+    cash: true,
+    revenue: true,
+    spend: true,
+    net: true
+  });
   
   // Event planning state
   const [events, setEvents] = useState(savedData.events);
@@ -406,7 +412,39 @@ const StartupCashManagement = () => {
       </div>
       
       <div className="bg-gray-50 p-4 rounded-lg shadow mb-6">
-        <h2 className="text-xl font-semibold mb-4">Cash Flow & Revenue Projection</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Cash Flow & Revenue Projection</h2>
+          <div className="flex flex-wrap gap-2">
+            <button 
+              onClick={() => setVisibleLines(prev => ({...prev, cash: !prev.cash}))}
+              className={`px-3 py-1 text-sm rounded-md flex items-center ${visibleLines.cash ? 'bg-blue-100 text-blue-800 border border-blue-300' : 'bg-gray-200 text-gray-600'}`}
+            >
+              <div className="w-3 h-3 rounded-full bg-blue-600 mr-2"></div>
+              Cash Balance {visibleLines.cash ? '✓' : ''}
+            </button>
+            <button 
+              onClick={() => setVisibleLines(prev => ({...prev, revenue: !prev.revenue}))}
+              className={`px-3 py-1 text-sm rounded-md flex items-center ${visibleLines.revenue ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-gray-200 text-gray-600'}`}
+            >
+              <div className="w-3 h-3 rounded-full bg-green-600 mr-2"></div>
+              Weekly Revenue {visibleLines.revenue ? '✓' : ''}
+            </button>
+            <button 
+              onClick={() => setVisibleLines(prev => ({...prev, spend: !prev.spend}))}
+              className={`px-3 py-1 text-sm rounded-md flex items-center ${visibleLines.spend ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-gray-200 text-gray-600'}`}
+            >
+              <div className="w-3 h-3 rounded-full bg-red-600 mr-2"></div>
+              Weekly Spend {visibleLines.spend ? '✓' : ''}
+            </button>
+            <button 
+              onClick={() => setVisibleLines(prev => ({...prev, net: !prev.net}))}
+              className={`px-3 py-1 text-sm rounded-md flex items-center ${visibleLines.net ? 'bg-purple-100 text-purple-800 border border-purple-300' : 'bg-gray-200 text-gray-600'}`}
+            >
+              <div className="w-3 h-3 rounded-full bg-purple-600 mr-2"></div>
+              Weekly Net {visibleLines.net ? '✓' : ''}
+            </button>
+          </div>
+        </div>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
@@ -433,39 +471,47 @@ const StartupCashManagement = () => {
                   label={{ value: event.name, position: 'insideTopRight', fill: '#8884d8', fontSize: 10 }}
                 />
               ))}
-              <Line 
-                type="monotone" 
-                dataKey="cash" 
-                stroke="#3b82f6" 
-                name="Cash Balance" 
-                strokeWidth={2}
-                dot={{ r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="revenue" 
-                stroke="#10b981" 
-                name="Weekly Revenue" 
-                strokeWidth={2}
-                dot={{ r: 3 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="spend" 
-                stroke="#ef4444" 
-                name="Weekly Spend" 
-                strokeWidth={2}
-                dot={{ r: 3 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="net" 
-                stroke="#8b5cf6" 
-                name="Weekly Net" 
-                strokeWidth={2}
-                dot={{ r: 3 }}
-                strokeDasharray="3 3"
-              />
+              {visibleLines.cash && (
+                <Line 
+                  type="monotone" 
+                  dataKey="cash" 
+                  stroke="#3b82f6" 
+                  name="Cash Balance" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                />
+              )}
+              {visibleLines.revenue && (
+                <Line 
+                  type="monotone" 
+                  dataKey="revenue" 
+                  stroke="#10b981" 
+                  name="Weekly Revenue" 
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                />
+              )}
+              {visibleLines.spend && (
+                <Line 
+                  type="monotone" 
+                  dataKey="spend" 
+                  stroke="#ef4444" 
+                  name="Weekly Spend" 
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                />
+              )}
+              {visibleLines.net && (
+                <Line 
+                  type="monotone" 
+                  dataKey="net" 
+                  stroke="#8b5cf6" 
+                  name="Weekly Net" 
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  strokeDasharray="3 3"
+                />
+              )}
             </LineChart>
           </ResponsiveContainer>
         </div>
