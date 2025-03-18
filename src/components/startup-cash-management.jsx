@@ -376,11 +376,11 @@ const StartupCashManagement = () => {
               <span className={`ml-2 px-2 py-1 rounded ${isCashFlowPositive() ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {isCashFlowPositive() ? 'Positive' : 'Negative'}
               </span>
-              {!isCashFlowPositive() && calculateCashFlowPositiveWeek() > 0 && (
-                <span className="ml-2 text-sm text-gray-600">
-                  (Projected positive in Week {calculateCashFlowPositiveWeek()})
-                </span>
-              )}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {calculateCashFlowPositiveWeek() > 0 
+                ? `Projected positive cash flow in Week ${calculateCashFlowPositiveWeek()}` 
+                : "No positive cash flow projected in the current timeframe"}
             </p>
           </div>
         </div>
