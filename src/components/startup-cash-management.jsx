@@ -181,6 +181,8 @@ const StartupCashManagement = () => {
     name: week.week,
     cash: week.endingCash,
     revenue: week.revenue,
+    spend: week.payroll + week.opex,
+    net: week.revenue - week.payroll - week.opex,
   }));
   
   // Check if we're cash flow positive
@@ -354,6 +356,23 @@ const StartupCashManagement = () => {
                 name="Weekly Revenue" 
                 strokeWidth={2}
                 dot={{ r: 3 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="spend" 
+                stroke="#ef4444" 
+                name="Weekly Spend" 
+                strokeWidth={2}
+                dot={{ r: 3 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="net" 
+                stroke="#8b5cf6" 
+                name="Weekly Net" 
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                strokeDasharray="3 3"
               />
             </LineChart>
           </ResponsiveContainer>
