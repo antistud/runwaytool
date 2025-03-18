@@ -308,7 +308,7 @@ const StartupCashManagement = () => {
       
       <div className="bg-gray-50 p-4 rounded-lg shadow mb-6">
         <h2 className="text-xl font-semibold mb-4">Cash Flow & Revenue Projection</h2>
-        <div className="h-64">
+        <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
