@@ -38,33 +38,15 @@ npm start
 
 4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-## Deployment to Cloudflare Pages
+## Deployment
 
-1. Create a Cloudflare account if you don't have one
-2. Install Wrangler CLI
-```bash
-npm install -g wrangler
-```
-
-3. Build the project
+1. Build the project
 ```bash
 npm run build
 ```
 
-4. Login to Cloudflare
-```bash
-wrangler login
-```
-
-5. Create a new Cloudflare Pages project
-```bash
-wrangler pages project create startup-cash-management
-```
-
-6. Deploy the project
-```bash
-wrangler pages publish build
-```
+2. The production-ready files will be in the `build` directory
+3. Deploy these files to your hosting provider of choice
 
 ## Usage
 

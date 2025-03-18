@@ -36,10 +36,5 @@ logs
 *.sln
 *.sw?
 
-# cloudflare
-.wrangler/
-.cloudflare/wrangler.toml
-
 # local development
 .aider*
-.vercel
