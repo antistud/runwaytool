@@ -70,9 +70,15 @@ const StartupCashManagement = () => {
       
       // Apply growth rate to revenue (compounded weekly)
       if (i > 0) {
+        // Calculate the growth factor based on the number of weeks
+        const growthFactor = Math.pow((1 + (revenueGrowth / 100)), i);
+        
         // Apply growth rate to the base revenue
         // This ensures that both initial revenue and any recurring revenue changes grow
-        currentRevenue = baseRevenue * Math.pow((1 + (revenueGrowth / 100)), i);
+        currentRevenue = baseRevenue * growthFactor;
+        
+        // Log for debugging
+        // console.log(`Week ${weekNum}: Base Revenue: ${baseRevenue}, Growth Factor: ${growthFactor}, Current Revenue: ${currentRevenue}`);
       }
       
       // Process events for this week
@@ -129,6 +135,14 @@ const StartupCashManagement = () => {
           const event = events.find(ev => ev.name === e);
           return sum + parseInt(event.amount);
         }, 0);
+        
+      // Get recurring revenue events that started in previous weeks
+      // These should already be factored into the growth calculation
+      const recurringRevenueEvents = weekEvents
+        .filter(e => {
+          const event = events.find(ev => ev.name === e);
+          return event && event.recurring && event.type === 'revenue' && event.week < weekNum;
+        });
         
       const adjustedRevenue = Math.round(currentRevenue + oneTimeRevenueImpact);
       const adjustedPayroll = currentPayroll + eventPayrollImpact;
@@ -198,6 +212,10 @@ const StartupCashManagement = () => {
         // For recurring revenue events, add to the base revenue
         // This will ensure they grow with the growth rate in future weeks
         baseRevenue += newRevenueImpact;
+        
+        // Also add to current revenue for this week's calculation
+        // since the growth calculation won't apply until next week
+        currentRevenue += newRevenueImpact;
       }
       
       if (newPayrollImpact !== 0) {
